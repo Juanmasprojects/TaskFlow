@@ -1,8 +1,9 @@
 ﻿using TaskStatus = TaskFlow.Core.TaskStatus;
 using TaskFlow.Application;
-using TaskFlow.Core;
+using TaskFlow.Infrastructure;
 
-var taskService = new TaskService(); // Create an instance of TaskService to manage tasks
+var taskRepository = new FileTaskRepository("tasks.json"); // Initialize the file-based task repository
+var taskService = new TaskService(taskRepository); // Create the task service with the repository
 
 bool running = true; // Flag to control the main loop
 

@@ -9,6 +9,14 @@ namespace TaskFlow.Application
     public class TaskService
     {
         private readonly List<TaskItem> _tasks = new List<TaskItem>(); // In-memory list to store tasks
+        private readonly ITaskRepository _taskRepository; // Repository to persist tasks
+
+        public TaskService(ITaskRepository taskRepository)
+        {
+            _taskRepository = taskRepository; // Inject the task repository
+            _tasks = _taskRepository.GetAllTasks(); //  Load existing tasks from the repository
+        }
+
         public TaskItem CreateTask(string title, string description)
         {
             if (string.IsNullOrWhiteSpace(title))
@@ -22,6 +30,7 @@ namespace TaskFlow.Application
                 Description = description
             };
             _tasks.Add(task); // Add new task to the list
+            _taskRepository.SaveAll(_tasks); // Save the updated list to the repository
             return task; // Return the created task
         }
         public IEnumerable<TaskItem> GetAllTasks()
@@ -47,6 +56,7 @@ namespace TaskFlow.Application
                         break;
                 }
             }
+            _taskRepository.SaveAll(_tasks); // Save the updated list to the repository
         }
         public void DeleteTask(Guid taskId)
         {
@@ -54,6 +64,7 @@ namespace TaskFlow.Application
             if (task != null)
             {
                 _tasks.Remove(task); // Remove the task from the list
+                _taskRepository.SaveAll(_tasks); // Save the updated list to the repository
             }
         }
     }
