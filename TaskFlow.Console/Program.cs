@@ -1,4 +1,5 @@
 ﻿using TaskStatus = TaskFlow.Core.TaskStatus;
+using TaskItem = TaskFlow.Core.TaskItem;
 using TaskFlow.Application;
 using TaskFlow.Infrastructure;
 
@@ -48,6 +49,7 @@ while (running)
 
     void createTask()
     {
+        Console.WriteLine("----------------------------------------------"); // Header for create section
         Console.Write("Enter task title: ");
         var title = Console.ReadLine() ?? ""; //Read task title from user
 
@@ -66,20 +68,95 @@ while (running)
     }
 
     void listTasks()
-    {
+    {        
+        Console.WriteLine("------------------Tasks List------------------"); // Header for task list
+
         var tasks = taskService.GetAllTasks(); // Get all tasks
+        int index = 1; // Initialize index for task numbering
         foreach (var task in tasks)
         {
-            Console.WriteLine($"[{task.Status}] {task.Title} | ID: {task.Id} | Created: {task.CreatedAt:g}");
+            writeLine(task, index); // Display each task
+            index++; // Increment index for the next task
         }
+        Console.WriteLine("----------------------------------------------"); // Footer for task list
+        // Optionally, you can prompt the user to view task details
+        while (true)
+        {
+            Console.Write("Select a task by Index or ID to view details, or press Enter to return to menu: ");
+            var selection = Console.ReadLine(); // Read user selection for task details
+            if (string.IsNullOrWhiteSpace(selection))
+            {
+                return; // Return to menu if no selection is made
+            }
+            var matchingTasks = searchTask(selection, tasks);
+            
+            if (matchingTasks.Count > 1)
+            {
+                Console.WriteLine("Please be more specific - multiple tasks match this ID."); // Handle multiple matches
+            }
+            else if (matchingTasks.Count == 1)
+            {
+                writeDetails(matchingTasks[0]); // Display task details
+            }
+            else
+            {
+                Console.WriteLine("Invalid selection. Please enter a valid task ID, short ID, or index."); // Handle invalid selection
+            }
+        }
+    }
+
+    void writeLine(TaskItem task, int index)
+    {
+        var indexPrefix = index == 0 ? "" : $"{index}. "; // Prefix with index if it's not 0
+        Console.WriteLine($"{indexPrefix}[{task.Id.ToString().Substring(0, 6)}] {task.Title} | Status: {task.Status}");
+    }
+
+    void writeDetails(TaskItem task)
+    {
+        Console.WriteLine("----------------Task Details------------------"); // Header for task details
+        Console.WriteLine($"ID: {task.Id}");
+        Console.WriteLine($"Title: {task.Title}");
+        Console.WriteLine($"Description: {task.Description}");
+        Console.WriteLine($"Status: {task.Status}");
+        Console.WriteLine($"Created At: {task.CreatedAt}");
+    }
+    
+    List<TaskItem> searchTask(string selection, IEnumerable<TaskItem> tasks)
+    {
+        // Search by ID or short ID
+        var matchingTasks = tasks.Where(t => t.Id.ToString().StartsWith(selection, StringComparison.OrdinalIgnoreCase)).ToList();
+        
+        // If no matches found by ID/short ID, try searching by index
+        if (matchingTasks.Count == 0 && int.TryParse(selection, out var taskIndex) && taskIndex > 0 && taskIndex <= tasks.Count())
+        {
+            matchingTasks.Add(tasks.ElementAt(taskIndex - 1)); // Find task by index
+        }
+        
+        return matchingTasks;
     }
 
     void updateTaskStatus()
     {
+        Console.WriteLine("----------------------------------------------"); // Header for update section
         Console.Write("Enter task ID to update: ");
         var idInput = Console.ReadLine();
-        if (Guid.TryParse(idInput, out var taskId))
+        while (string.IsNullOrWhiteSpace(idInput))
         {
+            Console.Write("Please enter a valid task ID, short ID, or index: ");
+            idInput = Console.ReadLine();
+        }
+        var allTasks = taskService.GetAllTasks();
+        var matchingTasks = searchTask(idInput, allTasks);
+        
+        if (matchingTasks.Count > 1)
+        {
+            Console.WriteLine("Please be more specific - multiple tasks match this ID."); // Handle multiple matches
+        }
+        else if (matchingTasks.Count == 1)
+        {
+            var task = matchingTasks[0];
+            Console.Write("Task selected: ");
+            writeLine(task, 0); // Display the selected task
             Console.WriteLine("Select new status:");
             Console.WriteLine("1. ToDo");
             Console.WriteLine("2. InProgress");
@@ -94,27 +171,53 @@ while (running)
                 _ => throw new ArgumentException("Invalid status option.")
             };
 
-            taskService.UpdateTaskStatus(taskId, newStatus); // Update the task status
+            taskService.UpdateTaskStatus(task.Id, newStatus); // Update the task status
             Console.WriteLine("Task status updated.");
         }
         else
         {
-            Console.WriteLine("Invalid task ID format."); // Handle invalid GUID input
+            Console.WriteLine("Invalid selection. Please enter a valid task ID, short ID, or index."); // Handle invalid input
         }
     }
 
     void deleteTask()
     {
+        Console.WriteLine("----------------------------------------------"); // Header for delete section
         Console.Write("Enter task ID to delete: ");
         var idInput = Console.ReadLine();
-        if (Guid.TryParse(idInput, out var taskId))
+        while (string.IsNullOrWhiteSpace(idInput))
         {
-            taskService.DeleteTask(taskId); // Delete the specified task
-            Console.WriteLine("Task deleted.");
+            Console.Write("Please enter a valid task ID, short ID, or index: ");
+            idInput = Console.ReadLine();
+        }
+
+        var allTasks = taskService.GetAllTasks();
+        var matchingTasks = searchTask(idInput, allTasks);
+        
+        if (matchingTasks.Count > 1)
+        {
+            Console.WriteLine("Please be more specific - multiple tasks match this ID."); // Handle multiple matches
+        }
+        else if (matchingTasks.Count == 1)
+        {
+            var task = matchingTasks[0];
+            Console.Write("Task to delete: ");
+            writeLine(task, 0); // Display the task
+            Console.Write("Are you sure you want to delete this task? (y/n): ");
+            var confirmation = Console.ReadLine();
+            if (confirmation?.ToLower() == "y")
+            {
+                taskService.DeleteTask(task.Id); // Delete the specified task
+                Console.WriteLine("Task deleted.");
+            }
+            else
+            {
+                Console.WriteLine("Deletion cancelled.");
+            }
         }
         else
         {
-            Console.WriteLine("Invalid task ID format."); // Handle invalid GUID input
+            Console.WriteLine("Invalid selection. Please enter a valid task ID, short ID, or index."); // Handle invalid input
         }
     }
 }
