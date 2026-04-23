@@ -29,6 +29,9 @@ while (running)
             deleteTask(); // Handle deleting a task
             break;
         case "5":
+            filterTasks(); // Handle filtering tasks
+            break;
+        case "6":
             running = false; // Exit the application
             break;
         default:
@@ -43,7 +46,8 @@ while (running)
         Console.WriteLine("2. List Tasks");
         Console.WriteLine("3. Update Task Status");
         Console.WriteLine("4. Delete Task");
-        Console.WriteLine("5. Exit");
+        Console.WriteLine("5. Filter Tasks");
+        Console.WriteLine("6. Exit");
         Console.Write("Select an option: ");
     }
 
@@ -79,7 +83,13 @@ while (running)
             index++; // Increment index for the next task
         }
         Console.WriteLine("----------------------------------------------"); // Footer for task list
+        
         // Optionally, you can prompt the user to view task details
+        viewTaskDetails(tasks);
+    }
+
+    void viewTaskDetails(IEnumerable<TaskItem> tasks)
+    {
         while (true)
         {
             Console.Write("Select a task by Index or ID to view details, or press Enter to return to menu: ");
@@ -105,6 +115,8 @@ while (running)
         }
     }
 
+
+
     void writeLine(TaskItem task, int index)
     {
         var indexPrefix = index == 0 ? "" : $"{index}. "; // Prefix with index if it's not 0
@@ -113,7 +125,7 @@ while (running)
 
     void writeDetails(TaskItem task)
     {
-        Console.WriteLine("----------------Task Details------------------"); // Header for task details
+        Console.WriteLine("-----------------Task Details-----------------"); // Header for task details
         Console.WriteLine($"ID: {task.Id}");
         Console.WriteLine($"Title: {task.Title}");
         Console.WriteLine($"Description: {task.Description}");
@@ -207,6 +219,44 @@ while (running)
         else
         {
             Console.WriteLine("Invalid selection. Please enter a valid task ID, short ID, or index."); // Handle invalid input
+        }
+    }
+
+    void filterTasks()
+    {
+        Console.WriteLine("---------------Filter by status---------------"); // Header for filter section
+        Console.WriteLine("1. ToDo");
+        Console.WriteLine("2. InProgress");
+        Console.WriteLine("3. Done");
+        Console.Write("Select status to filter: ");
+        var statusInput = Console.ReadLine();
+
+        TaskStatus filterStatus = statusInput switch
+        {
+            "1" => TaskStatus.ToDo,
+            "2" => TaskStatus.InProgress,
+            "3" => TaskStatus.Done,
+            _ => throw new ArgumentException("Invalid status option.")
+        };
+
+        var allTasks = taskService.GetAllTasks(); // Get all tasks
+        var filteredTasks = allTasks.Where(t => t.Status == filterStatus).ToList(); // Filter by status
+
+        if (filteredTasks.Count == 0)
+        {
+            Console.WriteLine("No tasks found with the selected status."); // Handle no results
+        }
+        else
+        {
+            Console.WriteLine("----------------Filtered Tasks----------------"); // Header for filtered list
+            int index = 1; // Initialize index for task numbering
+            foreach (var task in filteredTasks)
+            {
+                writeLine(task, index); // Display each filtered task
+                index++; // Increment index for the next task
+            }
+            Console.WriteLine("----------------------------------------------"); // Footer for filtered list
+            viewTaskDetails(filteredTasks); // Optionally allow viewing details of filtered tasks
         }
     }
 }
