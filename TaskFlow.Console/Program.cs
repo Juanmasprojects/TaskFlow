@@ -41,7 +41,11 @@ while (running)
 
     void showMenu()
     {
-        Console.WriteLine("TaskFlow - Task Management");
+        // Change background color for the menu
+        Console.BackgroundColor = ConsoleColor.DarkBlue;
+        Console.WriteLine("------------ TaskFlow - Task Management -----------");
+        Console.ResetColor(); // Reset color after displaying the menu
+
         Console.WriteLine("1. Create Task");
         Console.WriteLine("2. List Tasks");
         Console.WriteLine("3. Update Task Status");
@@ -49,11 +53,14 @@ while (running)
         Console.WriteLine("5. Filter Tasks");
         Console.WriteLine("6. Exit");
         Console.Write("Select an option: ");
+
     }
 
     void createTask()
     {
+        Console.BackgroundColor = ConsoleColor.Blue;
         Console.WriteLine("----------------------------------------------"); // Header for create section
+        Console.ResetColor();
         Console.Write("Enter task title: ");
         var title = Console.ReadLine() ?? ""; //Read task title from user
 
@@ -72,8 +79,11 @@ while (running)
     }
 
     void listTasks()
-    {        
+    {
+        Console.Clear(); // Clear the console for better readability of the task list        
+        Console.BackgroundColor = ConsoleColor.Blue;
         Console.WriteLine("------------------Tasks List------------------"); // Header for task list
+        Console.ResetColor();
 
         var tasks = taskService.GetAllTasks(); // Get all tasks
         int index = 1; // Initialize index for task numbering
@@ -82,7 +92,9 @@ while (running)
             writeLine(task, index); // Display each task
             index++; // Increment index for the next task
         }
+        Console.BackgroundColor = ConsoleColor.Blue;
         Console.WriteLine("----------------------------------------------"); // Footer for task list
+        Console.ResetColor();
         
         // Optionally, you can prompt the user to view task details
         viewTaskDetails(tasks);
@@ -120,12 +132,25 @@ while (running)
     void writeLine(TaskItem task, int index)
     {
         var indexPrefix = index == 0 ? "" : $"{index}. "; // Prefix with index if it's not 0
+
+        // Change foreground color based on task status
+        Console.ForegroundColor = task.Status switch
+        {  
+            TaskStatus.ToDo => ConsoleColor.Yellow,
+            TaskStatus.InProgress => ConsoleColor.Cyan,
+            TaskStatus.Done => ConsoleColor.Green,
+            _ => ConsoleColor.White
+        };
+
         Console.WriteLine($"{indexPrefix}[{task.Id.ToString().Substring(0, 6)}] {task.Title} | Status: {task.Status}");
+        Console.ResetColor(); // Reset color after writing the line
     }
 
     void writeDetails(TaskItem task)
     {
+        Console.BackgroundColor = ConsoleColor.Blue;
         Console.WriteLine("-----------------Task Details-----------------"); // Header for task details
+        Console.ResetColor();
         Console.WriteLine($"ID: {task.Id}");
         Console.WriteLine($"Title: {task.Title}");
         Console.WriteLine($"Description: {task.Description}");
@@ -149,7 +174,9 @@ while (running)
 
     void updateTaskStatus()
     {
+        Console.BackgroundColor = ConsoleColor.Blue;
         Console.WriteLine("----------------------------------------------"); // Header for update section
+        Console.ResetColor();
         Console.Write("Enter task ID to update: ");
         var idInput = Console.ReadLine();
         var allTasks = taskService.GetAllTasks();
@@ -189,7 +216,9 @@ while (running)
 
     void deleteTask()
     {
+        Console.BackgroundColor = ConsoleColor.Blue;
         Console.WriteLine("----------------------------------------------"); // Header for delete section
+        Console.ResetColor();
         Console.Write("Enter task ID to delete: ");
         var idInput = Console.ReadLine();
         var allTasks = taskService.GetAllTasks();
@@ -224,7 +253,9 @@ while (running)
 
     void filterTasks()
     {
+        Console.BackgroundColor = ConsoleColor.Blue;
         Console.WriteLine("---------------Filter by status---------------"); // Header for filter section
+        Console.ResetColor();
         Console.WriteLine("1. ToDo");
         Console.WriteLine("2. InProgress");
         Console.WriteLine("3. Done");
@@ -248,14 +279,19 @@ while (running)
         }
         else
         {
+            Console.Clear(); // Clear the console for better readability of filtered results
+            Console.BackgroundColor = ConsoleColor.Blue;
             Console.WriteLine("----------------Filtered Tasks----------------"); // Header for filtered list
+            Console.ResetColor();
             int index = 1; // Initialize index for task numbering
             foreach (var task in filteredTasks)
             {
                 writeLine(task, index); // Display each filtered task
                 index++; // Increment index for the next task
             }
+            Console.BackgroundColor = ConsoleColor.Blue;
             Console.WriteLine("----------------------------------------------"); // Footer for filtered list
+            Console.ResetColor();
             viewTaskDetails(filteredTasks); // Optionally allow viewing details of filtered tasks
         }
     }
