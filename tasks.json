@@ -12,5 +12,12 @@
     "Description": "Add better funtionality for users",
     "Status": 2,
     "CreatedAt": "2026-04-22T15:34:19.9314845Z"
+  },
+  {
+    "Id": "d53ab302-a08c-4939-b46a-693696f3741b",
+    "Title": "SearchFunction",
+    "Description": "Create the functionality to search task by status",
+    "Status": 1,
+    "CreatedAt": "2026-04-23T14:50:31.4016003Z"
   }
 ]

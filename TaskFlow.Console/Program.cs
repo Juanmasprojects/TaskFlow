@@ -140,13 +140,8 @@ while (running)
         Console.WriteLine("----------------------------------------------"); // Header for update section
         Console.Write("Enter task ID to update: ");
         var idInput = Console.ReadLine();
-        while (string.IsNullOrWhiteSpace(idInput))
-        {
-            Console.Write("Please enter a valid task ID, short ID, or index: ");
-            idInput = Console.ReadLine();
-        }
         var allTasks = taskService.GetAllTasks();
-        var matchingTasks = searchTask(idInput, allTasks);
+        var matchingTasks = searchTask(idInput ?? "", allTasks);
         
         if (matchingTasks.Count > 1)
         {
@@ -185,14 +180,8 @@ while (running)
         Console.WriteLine("----------------------------------------------"); // Header for delete section
         Console.Write("Enter task ID to delete: ");
         var idInput = Console.ReadLine();
-        while (string.IsNullOrWhiteSpace(idInput))
-        {
-            Console.Write("Please enter a valid task ID, short ID, or index: ");
-            idInput = Console.ReadLine();
-        }
-
         var allTasks = taskService.GetAllTasks();
-        var matchingTasks = searchTask(idInput, allTasks);
+        var matchingTasks = searchTask(idInput ?? "", allTasks);
         
         if (matchingTasks.Count > 1)
         {
