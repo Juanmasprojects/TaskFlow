@@ -60,21 +60,10 @@ This structure allows the business logic to remain independent from the UI and p
 
 ## ▶️ How to Run
 
-bash
+```bash
 git clone https://github.com/Juanmasprojects/TaskFlow.git
 cd TaskFlow
 dotnet run --project TaskFlow.Console
-
----
-
-## 🎮 Usage
-
-Create tasks with title and description
-View tasks in a compact list
-Select a task using its ID to see detailed information
-Update task status
-Delete tasks with confirmation
-Data is automatically saved and loaded from a JSON file
 
 ---
 
@@ -82,13 +71,13 @@ Data is automatically saved and loaded from a JSON file
 
 This project helped me develop and reinforce key backend skills:
 
-Designing a layered architecture in .NET
-Applying the repository pattern for data persistence
-Separating business logic from presentation
-Structuring a scalable and maintainable project
-Improving user experience in a CLI environment
-Handling real-world concerns like data persistence and validation
-Using Git and GitHub in a structured and incremental workflow
+- Designing a layered architecture in .NET
+- Applying the repository pattern for data persistence
+- Separating business logic from presentation
+- Structuring a scalable and maintainable project
+- Improving user experience in a CLI environment
+- Handling real-world concerns like data persistence and validation
+- Using Git and GitHub in a structured and incremental workflow
 
 ---
 
