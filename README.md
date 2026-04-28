@@ -19,6 +19,12 @@ This project represents a step towards writing production-ready backend code.
 
 ---
 
+🎥 Demo
+
+[![Watch the video](https://img.youtube.com/vi/7lKqEMZOfiY/0.jpg)](https://www.youtube.com/watch?v=7lKqEMZOfiY)
+
+---
+
 ## 🚀 Features
 
 - Create, update and delete tasks
@@ -54,7 +60,7 @@ This structure allows the business logic to remain independent from the UI and p
 
 ## ▶️ How to Run
 
-```bash
+bash
 git clone https://github.com/Juanmasprojects/TaskFlow.git
 cd TaskFlow
 dotnet run --project TaskFlow.Console
@@ -71,12 +77,6 @@ Data is automatically saved and loaded from a JSON file
 
 ---
 
-🎥 Demo
-
-
-
----
-
 📚 What I Learned
 
 This project helped me develop and reinforce key backend skills:
@@ -88,3 +88,9 @@ Structuring a scalable and maintainable project
 Improving user experience in a CLI environment
 Handling real-world concerns like data persistence and validation
 Using Git and GitHub in a structured and incremental workflow
+
+---
+
+## Author
+
+Juan Manuel Blanca
