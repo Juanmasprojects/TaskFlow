@@ -67,7 +67,8 @@ dotnet run --project TaskFlow.Console
 
 ---
 
-🎮 Usage
+## 🎮 Usage
+
 Create tasks with title and description
 View tasks in a compact list
 Select a task using its ID to see detailed information
@@ -77,7 +78,7 @@ Data is automatically saved and loaded from a JSON file
 
 ---
 
-📚 What I Learned
+## 📚 What I Learned
 
 This project helped me develop and reinforce key backend skills:
 
