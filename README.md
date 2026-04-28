@@ -60,10 +60,12 @@ This structure allows the business logic to remain independent from the UI and p
 
 ## ▶️ How to Run
 
-```bash
+```markdown
+bash
 git clone https://github.com/Juanmasprojects/TaskFlow.git
 cd TaskFlow
 dotnet run --project TaskFlow.Console
+```
 
 ---
 
